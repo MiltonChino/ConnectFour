@@ -38,3 +38,11 @@ span.container {
     z-index: 5;
     pointer-events: none;
 }
+
+.score-tracker {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+}

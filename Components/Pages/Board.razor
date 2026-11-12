@@ -38,10 +38,16 @@
        <span class="@pieces[i]"></span>
     }
 </div>
+<div class="score-tracker" aria-label="Consecutive wins">
+    <span>Player 1 streak: @player1WinStreak</span>
+    <span>Player 2 streak: @player2WinStreak</span>
+</div>
 @code {
     private string[] pieces = new string[42];
 private string winnerMessage = string.Empty;
 private string errorMessage = string.Empty;
+private int player1WinStreak;
+private int player2WinStreak;
 
 private string CurrentTurn => (winnerMessage == string.Empty) ? $"Player {State.PlayerTurn}'s Turn" : "";
 private string ResetStyle => (winnerMessage == string.Empty) ? "display: none;" : "";
@@ -61,7 +67,28 @@ catch (ArgumentException ex)
     errorMessage = ex.Message;
 }
 
-winnerMessage = State.CheckForWin() switch
+var gameResult = State.CheckForWin();
+@* Winning tracker *@
+if (winnerMessage == string.Empty)
+{
+    switch (gameResult)
+    {
+        case GameState.WinState.Player1_Wins:
+            player1WinStreak++;
+            player2WinStreak = 0;
+            break;
+        case GameState.WinState.Player2_Wins:
+            player2WinStreak++;
+            player1WinStreak = 0;
+            break;
+        case GameState.WinState.Tie:
+            player1WinStreak = 0;
+            player2WinStreak = 0;
+            break;
+    }
+}
+
+winnerMessage = gameResult switch
 {
     GameState.WinState.Player1_Wins => "Player 1 Wins!",
     GameState.WinState.Player2_Wins => "Player 2 Wins!",
